@@ -1,12 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import movieApi from '../api/movieApi';
-import MovieForm from '../components/MovieForm';
 import MovieList from '../components/MovieList';
 
-function WatchlistPage() {
+function WatchlistPage({ refreshKey = 0 }) {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
   const fetchMovies = useCallback(async () => {
@@ -25,20 +23,7 @@ function WatchlistPage() {
 
   useEffect(() => {
     fetchMovies();
-  }, [fetchMovies]);
-
-  const handleCreateMovie = async (movieData) => {
-    setIsSubmitting(true);
-    try {
-      const newMovie = await movieApi.createMovie(movieData);
-      setMovies((prev) => [newMovie, ...prev]);
-    } catch (err) {
-      console.error('Error creating movie:', err);
-      throw err;
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  }, [fetchMovies, refreshKey]);
 
   const handleMarkWatched = async (id) => {
     try {
@@ -65,10 +50,6 @@ function WatchlistPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">My Watchlist</h1>
         <p className="text-gray-600">Movies you want to watch</p>
-      </div>
-
-      <div className="mb-8">
-        <MovieForm onSubmit={handleCreateMovie} isLoading={isSubmitting} />
       </div>
 
       {error && (

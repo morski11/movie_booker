@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
-function Navbar() {
+function Navbar({ onAddMovie }) {
   const linkClasses = ({ isActive }) =>
     `px-4 py-2 rounded-lg font-medium transition-colors ${
       isActive
@@ -17,13 +17,21 @@ function Navbar() {
             <span className="text-xl font-bold text-gray-800">Movie Booker</span>
           </div>
           
-          <div className="flex space-x-2">
+          <div className="flex items-center space-x-2">
             <NavLink to="/watchlist" className={linkClasses}>
               Watchlist
             </NavLink>
             <NavLink to="/watched" className={linkClasses}>
               Already Watched
             </NavLink>
+
+            <button
+              type="button"
+              onClick={onAddMovie}
+              className="px-4 py-2 rounded-lg font-medium transition-colors bg-primary-600 text-white hover:bg-primary-700 focus:ring-4 focus:ring-primary-300"
+            >
+              Add Movie
+            </button>
           </div>
         </div>
       </div>
