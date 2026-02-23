@@ -11,20 +11,22 @@ function Navbar({ onAddMovie }) {
   return (
     <nav className="bg-white shadow-md">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="relative flex items-center justify-between h-16">
           <div className="flex items-center space-x-2">
             <span className="text-2xl">🎬</span>
             <span className="text-xl font-bold text-gray-800">Movie Booker</span>
           </div>
-          
-          <div className="flex items-center space-x-2">
+
+          <div className="absolute left-1/2 -translate-x-1/2 flex items-center space-x-2">
             <NavLink to="/watchlist" className={linkClasses}>
               Watchlist
             </NavLink>
             <NavLink to="/watched" className={linkClasses}>
               Already Watched
             </NavLink>
+          </div>
 
+          <div className="flex items-center">
             <button
               type="button"
               onClick={onAddMovie}
