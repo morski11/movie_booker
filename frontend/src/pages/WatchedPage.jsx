@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import movieApi from '../api/movieApi';
 import MovieList from '../components/MovieList';
+import ConfirmDialog from '../components/ConfirmDialog';
 
 function WatchedPage() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [movieToDelete, setMovieToDelete] = useState(null);
 
   const fetchMovies = useCallback(async () => {
     try {
@@ -25,14 +27,21 @@ function WatchedPage() {
     fetchMovies();
   }, [fetchMovies]);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this movie?')) return;
+  const handleDeleteClick = (id) => {
+    const movie = movies.find((m) => m.id === id);
+    setMovieToDelete(movie);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!movieToDelete) return;
     
     try {
-      await movieApi.deleteMovie(id);
-      setMovies((prev) => prev.filter((movie) => movie.id !== id));
+      await movieApi.deleteMovie(movieToDelete.id);
+      setMovies((prev) => prev.filter((movie) => movie.id !== movieToDelete.id));
     } catch (err) {
       console.error('Error deleting movie:', err);
+    } finally {
+      setMovieToDelete(null);
     }
   };
 
@@ -56,11 +65,20 @@ function WatchedPage() {
       ) : (
         <MovieList
           movies={movies}
-          onDelete={handleDelete}
+          onDelete={handleDeleteClick}
           showWatchedButton={false}
           emptyMessage="No watched movies yet. Start watching some movies from your watchlist!"
         />
       )}
+
+      <ConfirmDialog
+        open={!!movieToDelete}
+        onClose={() => setMovieToDelete(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Movie"
+        message={`Are you sure you want to delete "${movieToDelete?.title}" from your watched list?`}
+        confirmText="Delete"
+      />
     </div>
   );
 }
